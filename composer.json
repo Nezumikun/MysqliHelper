@@ -1,0 +1,26 @@
+{
+    "name": "nezumikun/mysqli-helper",
+    "type": "library",
+    "description": "Helper for use mysqli in PHP",
+    "version": "1.0.0",
+    "keywords": ["mysqli"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alexey Kozhevnikov",
+            "email": "alexey.kozhevnikov@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "ext-mysqli": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Nezumikun\\MysqliHelper\\": "src/"
+        },
+        "classmap": [
+            "src/"
+        ]
+    }
+}
