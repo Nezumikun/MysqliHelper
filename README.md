@@ -1,2 +1,2 @@
 # MysqliHelper
-Helper for use mysqli in PHP
+Simple helper for use mysqli in PHP.
