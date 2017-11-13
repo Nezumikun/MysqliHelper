@@ -14,7 +14,7 @@ class MysqliHelper {
                 $$key = $val;
             }
         }
-        $this->db = new mysqli($host, $username, $passwd, $dbname, $port, $socket);
+        $this->db = new \mysqli($host, $username, $passwd, $dbname, $port, $socket);
         $this->db->set_charset($charset);
         if ($query_path != null) {
             $this->setQueryPath($query_path);
@@ -26,16 +26,6 @@ class MysqliHelper {
         $this->queries = [];
     }
 
-    private function getFieldsNames(mysqli_result $meta) {
-        $params = [];
-        $fields = $meta->fetch_fields();
-        foreach ($fields as $field) {
-            //${$field->name} = NULL;
-            $params[] = '$' . $field->name;
-        }
-        return $params;
-    }
-    
     private function cleanNextResults() {
         while ($this->db->more_results()) {
             if ($this->db->next_result()) {
@@ -44,7 +34,7 @@ class MysqliHelper {
         }
     }
     
-    private function getAssoc(mysqli_stmt $stmt) {
+    private function getAssoc(\mysqli_stmt $stmt) {
         if (method_exists($stmt, "get_result") && method_exists("mysqli_result", "fetch_assoc")) {
             $temp = $stmt->get_result();
             return $temp->fetch_assoc();
@@ -54,12 +44,17 @@ class MysqliHelper {
         if ($meta === FALSE) {
             return $res;
         }
-        $code = '$stmt->bind_result(' . implode(", ", $this->getFieldsNames($meta)) . ');';
+        $fields = [];
+        foreach ($meta->fetch_fields() as $field) {
+            ${$field->name} = NULL;
+            $fields[] = $field->name;
+        }
+        $code = '$stmt->bind_result($' . implode(", $", $fields) . ');';
         eval($code);
         while ($stmt->fetch()) {
             $row = [];
             foreach ($fields as $field) {
-                $row[$field->name] = ${$field->name};
+                $row[$field] = ${$field};
             }
             $res[] = $row;
         }
@@ -99,14 +94,14 @@ class MysqliHelper {
     }
     
     protected function getFileName($query_name) {
-        return $this->query_path . $query_name . ".sql";
+        return $this->query_path . "/" . $query_name . ".sql";
     }
     
     protected function getSqlFile($query_name) {
         if (!array_key_exists($query_name, $this->queries)) {
             $query_file = $this->getFileName($query_name);
             if (!file_exists($query_file)) {
-                throw new Exception("File for query ". $query_name . " not found");
+                throw new \Exception("File '" . $query_file . "' for query ". $query_name . " not found");
             }
             $this->queries[$query_name] = file_get_contents($query_file);
         }
