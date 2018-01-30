@@ -35,11 +35,14 @@ class MysqliHelper {
     }
     
     private function getAssoc(\mysqli_stmt $stmt) {
+        $res = [];
         if (method_exists($stmt, "get_result") && method_exists("mysqli_result", "fetch_assoc")) {
             $temp = $stmt->get_result();
-            return $temp->fetch_assoc();
+            while ($row = $temp->fetch_assoc()) {
+                $res[] = $row;
+            }
+            return $row;
         }
-        $res = [];
         $meta = $stmt->result_metadata();
         if ($meta === FALSE) {
             return $res;
