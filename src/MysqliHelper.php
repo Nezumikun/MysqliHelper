@@ -41,7 +41,7 @@ class MysqliHelper {
             while ($row = $temp->fetch_assoc()) {
                 $res[] = $row;
             }
-            return $row;
+            return $res;
         }
         $meta = $stmt->result_metadata();
         if ($meta === FALSE) {

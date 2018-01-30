@@ -2,7 +2,7 @@
     "name": "nezumikun/mysqli-helper",
     "type": "library",
     "description": "Helper for use mysqli in PHP",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "keywords": ["mysqli"],
     "license": "MIT",
     "authors": [
