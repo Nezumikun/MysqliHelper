@@ -69,13 +69,13 @@ class MysqliHelper {
     public function getAssocSql($query, $params = null) {
         $stmt =  $this->db->stmt_init();
         if (!$stmt->prepare($query)) {
-            throw new Exception($stmt->error);
+            throw new \Exception($stmt->error);
         }
         if ($params != null) {
             call_user_func_array([$stmt, "bind_param"], $params);
         }
         if (!$stmt->execute()) {
-            throw new Exception($stmt->error);
+            throw new \Exception($stmt->error);
         }
         return $this->getAssoc($stmt);
     }
@@ -83,13 +83,13 @@ class MysqliHelper {
     public function doSql($query, $params = null) {
         $stmt =  $this->db->stmt_init();
         if (!$stmt->prepare($query)) {
-            throw new Exception($stmt->error);
+            throw new \Exception($stmt->error);
         }
         if ($params != null) {
             call_user_func_array([$stmt, "bind_param"], $params);
         }
         if (!$stmt->execute()) {
-            throw new Exception($stmt->error);
+            throw new \Exception($stmt->error);
         }
         $id = $stmt->insert_id;
         $stmt->close();
