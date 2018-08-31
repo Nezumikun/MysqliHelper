@@ -118,4 +118,21 @@ class MysqliHelper {
     public function doFromFile($query_name, $params = null) {
         return $this->doSql($this->getSqlFile($query_name), $params);
     }
+
+    public function doFromFileMultipleInsert($query_name, $params = null) {
+        if (is_array($params) && (count($params) === 2) && is_array($params[1])) {
+            $sql = $this->getSqlFile($query_name);
+            preg_match("/(^.* VALUES\s*\()([^\)]+)(\))(.*)$/i", $sql, $matches);
+            $new_sql = $matches[1].$matches[2].$matches[3]. str_repeat(", (".$matches[2].")", count($params[1]) - 1) . $matches[4];
+            $new_params = [str_repeat($params[0], count($params[1]))];
+            for ($i = 0; $i < count($params[1]); $i++) {
+                for ($j = 0; $j < count($params[1][$i]); $j++) {
+                    $new_params[] = &$params[1][$i][$j];
+                }
+            }
+            return $this->doSql($new_sql, $new_params);
+        }
+        return $this->doSql($this->getSqlFile($query_name), $params);
+    }
+    
 }
